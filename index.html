@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrystalIT | B1 Division</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #020406;
+            --crystal: #00f2ff;
+            --discord: #5865F2;
+            --text: #ffffff;
+            --b1-accent: #ff003c;
+            --glitch-speed: 3s;
+        }
+
+        /* Animacja tła */
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(45deg, #020406, #050b16, #020406);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            padding-bottom: 80px;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Glitch Effect dla ASCII i Nagłówków */
+        @keyframes glitch {
+            0% { transform: translate(0); text-shadow: -2px 0 var(--b1-accent), 2px 0 var(--crystal); }
+            20% { transform: translate(-2px, 2px); }
+            40% { transform: translate(-2px, -2px); }
+            60% { transform: translate(2px, 2px); }
+            80% { transform: translate(2px, -2px); }
+            100% { transform: translate(0); text-shadow: -2px 0 var(--b1-accent), 2px 0 var(--crystal); }
+        }
+
+        .ascii-art {
+            font-size: 7px;
+            line-height: 1;
+            color: var(--crystal);
+            white-space: pre;
+            margin-top: 4rem;
+            margin-bottom: 2rem;
+            user-select: none;
+            animation: glitch var(--glitch-speed) infinite;
+            filter: drop-shadow(0 0 10px var(--crystal));
+        }
+
+        .container {
+            max-width: 1000px;
+            width: 90%;
+            text-align: center;
+            animation: fadeInUp 1s ease-out forwards;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Karty z animacją hov-glow */
+        .services {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 50px 0;
+        }
+
+        .service-card {
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid rgba(0, 242, 255, 0.1);
+            padding: 30px;
+            border-radius: 4px; /* Bardziej surowy wygląd */
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 242, 255, 0.1), transparent);
+            transition: 0.5s;
+        }
+
+        .service-card:hover::before { left: 100%; }
+
+        .service-card:hover {
+            transform: scale(1.03) translateY(-10px);
+            border-color: var(--crystal);
+            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+            background: rgba(0, 242, 255, 0.05);
+        }
+
+        .service-card h3 {
+            color: var(--crystal);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        /* Pulsujący Oddział B1 */
+        .b1-alert {
+            border: 2px solid var(--b1-accent);
+            background: rgba(255, 0, 60, 0.1);
+            padding: 25px;
+            margin: 50px 0;
+            font-weight: 900;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            animation: alertPulse 2s infinite;
+            position: relative;
+        }
+
+        @keyframes alertPulse {
+            0% { box-shadow: 0 0 0px var(--b1-accent); border-color: var(--b1-accent); }
+            50% { box-shadow: 0 0 30px var(--b1-accent); border-color: #fff; }
+            100% { box-shadow: 0 0 0px var(--b1-accent); border-color: var(--b1-accent); }
+        }
+
+        /* Przycisk Discord */
+        .discord-btn {
+            background: none;
+            color: var(--text);
+            padding: 20px 50px;
+            border: 2px solid var(--discord);
+            font-size: 1.6rem;
+            font-weight: 900;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .discord-btn::after {
+            content: "";
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 0;
+            background: var(--discord);
+            z-index: -1;
+            transition: 0.3s;
+        }
+
+        .discord-btn:hover::after { height: 100%; }
+        .discord-btn:hover { color: white; transform: skewX(-10deg); }
+
+        #toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--crystal);
+            color: #000;
+            padding: 15px 30px;
+            font-weight: bold;
+            display: none;
+            border-left: 5px solid #000;
+            z-index: 100;
+        }
+
+        @media (max-width: 768px) {
+            .ascii-art { font-size: 3.5px; }
+            .services { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <pre class="ascii-art">
+        │╲˜¨¯¨˜'╲'        │╲˜¨¯¨˜'╲ '    │╲˜¨¯¨˜'╲      ╱˜¨¯¨˜'╱│°        │╲˜¨¯¨˜'╲‚      ╱˜¨¯¨˜˜¨¯¨˜˜¨¯¨˜˜¨¯¨˜╲         '│╲˜¨¯¨˜╲‚   │˜¨¯¨˜'│°                        │˜¨¯¨˜'│'‚ ╱˜¨¯¨˜˜¨¯¨˜˜¨¯¨˜˜¨¯¨˜╲ 
+  ╱˜¨¯¨˜'╱╲      ╲'‚ │˜¨¯¨˜'│╲      '╲'‚  │ ╲      '╲  ╱      '╱ │‘  ╱˜¨¯¨˜'╱╲      '╲    ╲¸_¸_¸_      _¸_¸_¸╱'  '╱˜¨¯¨˜'╱╲      ╲  │      │    '                     │      '│  ╲¸_¸_¸_      _¸_¸_¸╱' 
+ │      '│ '│      '│  │      │ │      '│   │  ╲¸_¸_¸╲╱      '╱ '╱   │        │ │¸_¸_¸│°    '¯╲(¯╱      '╱ ¯)╱¯      │      '│ '│      '│°│      '│                         │      '│    '¯╲(¯╱      '╱ ¯)╱¯   
+ │      '│ '│¸_¸_¸│  │      │╱¸_¸_¸╱'    ╲  │˜¨¯¨˜'╱      ╱ '╱‘      ╲        ╲│˜¨¯¨˜'│           │      '│               │      '│_│      '│ │      '│'│˜¨¯¨˜°│                 │      '│          │      '│            
+ │      │             │      │╲˜¨¯¨˜'╲‚    '╲│¸_¸_╱      ╱ '╱      │˜¨¯¨˜│    '╲¸_¸¸│'        '╱      '╱│'‚             │      '│¯│      '│ │      '│'│        │                 │      '│        '╱      '╱│'‚            
+ │      │ '│˜¨¯¨˜'│‚  │      │ │      │ '      ¯╲(╱¸_¸_¸╱ '╱'       │      │╲      '╲  ‘      ╱¸_¸_╱ '│'‚             │      '│ '│      '│°│¸_¸_¸│╱¸_¸_¸╱│‘                │¸_¸_¸│      ╱¸_¸_╱ '│'‚            
+ │╲¸_¸_'╲╱      ╱│  │¸_¸_'│ │¸_¸_¸│          │˜¨¯¨˜│ '╱'          │¸_¸_'│╱¸_¸_╱│         │˜¨¯¨˜'│ ╱         °      │¸_¸_¸│ '│¸_¸_¸│°│˜¨¯¨˜'││˜¨¯¨˜'│ │‘                │˜¨¯¨˜'│°    │˜¨¯¨˜'│ ╱         °   
+ │ │˜¨¯¨╱¸_¸_'╱ '│  │˜¨¯¨˜'│ │˜¨¯¨˜'│          │¸_¸_'│╱‘           │˜¨¯¨˜││˜¨¯¨˜│ │'        '│¸_¸_'│╱                │˜¨¯¨˜'│  │˜¨¯¨˜'│°│¸_¸_¸││¸_¸_¸│╱                │¸_¸_¸│      '│¸_¸_'│╱               
+  ╲│¸_¸¸│˜¨¯¨˜'│ '╱‘ │¸_¸_¸│ │¸_¸_¸│'          ¯)╱¯‘             │¸_¸_││¸_¸_'│╱'‚         '¯╲(¯                  │¸_¸_¸│ '│¸_¸_¸│°  ¯╲(¯  ¯)╱¯                  ¯╲(¯'        '¯╲(¯                
+   ¯╲(¯│¸_¸_¸│╱    '¯╲(¯   ¯)╱¯              '‚                 '¯╲(¯ '¯)╱¯‘                                     ¯╲(¯    ¯)╱¯  ‘                                                                    
+          ¯)╱¯                '                                °           ‘                                                       ‘                                                                    
+    </pre>
+
+    <div class="container">
+        <h2 style="font-family: 'Montserrat'; letter-spacing: 5px;">CORE SERVICES</h2>
+        
+        <div class="services">
+            <div class="service-card">
+                <h3>[ WEB_DEV ]</h3>
+                <p>Tworzymy strony i platformy zoptymalizowane pod kątem wydajności i UX.</p>
+            </div>
+            <div class="service-card">
+                <h3>[ CRYPTO_APPS ]</h3>
+                <p>Aplikacje zintegrowane z portfelami krypto i architekturą rozproszoną.</p>
+            </div>
+            <div class="service-card">
+                <h3>[ PRIVACY_FIRST ]</h3>
+                <p>Szyfrowanie end-to-end dla klientów prywatnych oraz korporacji.</p>
+            </div>
+        </div>
+
+        <div class="b1-alert">
+            &gt;&gt; SKONTAKUJ SIĘ Z ODDZIAŁEM B1 ŻEBY ZAPŁACIĆ &lt;&lt;
+        </div>
+
+        <button class="discord-btn" onclick="copyDiscord()">
+            DISCORD: Az33_
+        </button>
+    </div>
+
+    <div id="toast">LINK_COPIED::B1_SECURE</div>
+
+    <script>
+        function copyDiscord() {
+            navigator.clipboard.writeText('Az33_');
+            const toast = document.getElementById('toast');
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+        }
+    </script>
+</body>
+</html>

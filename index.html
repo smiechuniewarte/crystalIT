@@ -3,188 +3,160 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CrystalIT | B1 Division</title>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@900&display=swap" rel="stylesheet">
+    <title>CrystalIT | B1 Division Alpha</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #020406;
+            --bg: #010204;
             --crystal: #00f2ff;
             --discord: #5865F2;
-            --text: #ffffff;
             --b1-accent: #ff003c;
-            --glitch-speed: 3s;
         }
 
-        /* Animacja tła */
-        body {
-            font-family: 'JetBrains Mono', monospace;
+        body, html {
+            margin: 0; padding: 0;
             background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(45deg, #020406, #050b16, #020406);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            padding-bottom: 80px;
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
             overflow-x: hidden;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        /* --- TŁO MATRIX --- */
+        #matrix-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            opacity: 0.15;
         }
 
-        /* Glitch Effect dla ASCII i Nagłówków */
-        @keyframes glitch {
-            0% { transform: translate(0); text-shadow: -2px 0 var(--b1-accent), 2px 0 var(--crystal); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); text-shadow: -2px 0 var(--b1-accent), 2px 0 var(--crystal); }
+        /* --- EFEKT CRT SCANLINE --- */
+        body::before {
+            content: " ";
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 2px, 3px 100%;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        /* --- PRELOADER --- */
+        #loader {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #000;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            z-index: 9999;
+        }
+
+        /* --- CONTENT --- */
+        #main-content {
+            opacity: 0;
+            display: flex; flex-direction: column;
+            align-items: center; padding: 20px;
+            transition: opacity 1s;
         }
 
         .ascii-art {
-            font-size: 7px;
-            line-height: 1;
+            font-size: 7px; line-height: 1;
             color: var(--crystal);
-            white-space: pre;
-            margin-top: 4rem;
-            margin-bottom: 2rem;
-            user-select: none;
-            animation: glitch var(--glitch-speed) infinite;
-            filter: drop-shadow(0 0 10px var(--crystal));
+            white-space: pre; margin-top: 3rem;
+            animation: glitch 3s infinite;
+            filter: drop-shadow(0 0 5px var(--crystal));
         }
 
-        .container {
-            max-width: 1000px;
-            width: 90%;
-            text-align: center;
-            animation: fadeInUp 1s ease-out forwards;
+        @keyframes glitch {
+            0% { transform: skew(0deg); text-shadow: 2px 0 var(--b1-accent); }
+            1% { transform: skew(10deg); }
+            2% { transform: skew(-10deg); }
+            3% { transform: skew(0deg); }
         }
 
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(40px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* Karty z animacją hov-glow */
         .services {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin: 50px 0;
+            gap: 25px; margin: 60px 0;
+            width: 100%; max-width: 1100px;
         }
 
         .service-card {
-            background: rgba(255, 255, 255, 0.01);
-            border: 1px solid rgba(0, 242, 255, 0.1);
+            background: rgba(0, 242, 255, 0.02);
+            border: 1px solid rgba(0, 242, 255, 0.2);
             padding: 30px;
-            border-radius: 4px; /* Bardziej surowy wygląd */
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
+            transition: 0.3s;
             overflow: hidden;
         }
 
-        .service-card::before {
-            content: "";
-            position: absolute;
-            top: 0; left: -100%;
-            width: 100%; height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 242, 255, 0.1), transparent);
-            transition: 0.5s;
-        }
-
-        .service-card:hover::before { left: 100%; }
-
+        /* Animowana ramka karty */
         .service-card:hover {
-            transform: scale(1.03) translateY(-10px);
-            border-color: var(--crystal);
+            background: rgba(0, 242, 255, 0.08);
             box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
-            background: rgba(0, 242, 255, 0.05);
+            transform: translateY(-5px);
         }
 
-        .service-card h3 {
-            color: var(--crystal);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
-        }
-
-        /* Pulsujący Oddział B1 */
         .b1-alert {
             border: 2px solid var(--b1-accent);
             background: rgba(255, 0, 60, 0.1);
-            padding: 25px;
-            margin: 50px 0;
-            font-weight: 900;
-            font-size: 1.2rem;
+            padding: 25px; margin: 40px 0;
+            color: var(--b1-accent);
+            font-weight: bold;
+            animation: blink 0.8s infinite;
             text-transform: uppercase;
-            animation: alertPulse 2s infinite;
-            position: relative;
         }
 
-        @keyframes alertPulse {
-            0% { box-shadow: 0 0 0px var(--b1-accent); border-color: var(--b1-accent); }
-            50% { box-shadow: 0 0 30px var(--b1-accent); border-color: #fff; }
-            100% { box-shadow: 0 0 0px var(--b1-accent); border-color: var(--b1-accent); }
+        @keyframes blink {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.98); }
         }
 
-        /* Przycisk Discord */
         .discord-btn {
-            background: none;
-            color: var(--text);
+            background: transparent;
+            color: #fff;
             padding: 20px 50px;
-            border: 2px solid var(--discord);
-            font-size: 1.6rem;
-            font-weight: 900;
+            border: 1px solid var(--discord);
+            font-size: 1.5rem;
+            font-weight: bold;
             cursor: pointer;
-            transition: 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 4px;
             position: relative;
-            z-index: 1;
+            overflow: hidden;
+            transition: 0.5s;
         }
 
-        .discord-btn::after {
-            content: "";
-            position: absolute;
-            bottom: 0; left: 0;
-            width: 100%; height: 0;
+        .discord-btn:hover {
             background: var(--discord);
-            z-index: -1;
-            transition: 0.3s;
+            box-shadow: 0 0 40px var(--discord);
+            letter-spacing: 5px;
         }
-
-        .discord-btn:hover::after { height: 100%; }
-        .discord-btn:hover { color: white; transform: skewX(-10deg); }
 
         #toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: var(--crystal);
-            color: #000;
-            padding: 15px 30px;
-            font-weight: bold;
-            display: none;
-            border-left: 5px solid #000;
-            z-index: 100;
+            position: fixed; bottom: 20px; right: 20px;
+            background: var(--crystal); color: #000;
+            padding: 15px 30px; display: none; font-weight: bold;
+            z-index: 1000;
         }
 
-        @media (max-width: 768px) {
-            .ascii-art { font-size: 3.5px; }
-            .services { grid-template-columns: 1fr; }
-        }
+        @media (max-width: 850px) { .ascii-art { font-size: 3.5px; } }
     </style>
 </head>
 <body>
 
-    <pre class="ascii-art">
+    <canvas id="matrix-canvas"></canvas>
+
+    <div id="loader">
+        <div id="bootText" style="color:var(--crystal); letter-spacing: 2px;">BYPASSING FIREWALL...</div>
+        <div style="width:200px; height:1px; background:rgba(255,255,255,0.1); margin-top:10px;">
+            <div id="fill" style="width:0%; height:100%; background:var(--crystal);"></div>
+        </div>
+    </div>
+
+    <div id="main-content">
+        <pre class="ascii-art">
         │╲˜¨¯¨˜'╲'        │╲˜¨¯¨˜'╲ '    │╲˜¨¯¨˜'╲      ╱˜¨¯¨˜'╱│°        │╲˜¨¯¨˜'╲‚      ╱˜¨¯¨˜˜¨¯¨˜˜¨¯¨˜˜¨¯¨˜╲         '│╲˜¨¯¨˜╲‚   │˜¨¯¨˜'│°                        │˜¨¯¨˜'│'‚ ╱˜¨¯¨˜˜¨¯¨˜˜¨¯¨˜˜¨¯¨˜╲ 
   ╱˜¨¯¨˜'╱╲      ╲'‚ │˜¨¯¨˜'│╲      '╲'‚  │ ╲      '╲  ╱      '╱ │‘  ╱˜¨¯¨˜'╱╲      '╲    ╲¸_¸_¸_      _¸_¸_¸╱'  '╱˜¨¯¨˜'╱╲      ╲  │      │    '                     │      '│  ╲¸_¸_¸_      _¸_¸_¸╱' 
  │      '│ '│      '│  │      │ │      '│   │  ╲¸_¸_¸╲╱      '╱ '╱   │        │ │¸_¸_¸│°    '¯╲(¯╱      '╱ ¯)╱¯      │      '│ '│      '│°│      '│                         │      '│    '¯╲(¯╱      '╱ ¯)╱¯   
@@ -196,28 +168,25 @@
   ╲│¸_¸¸│˜¨¯¨˜'│ '╱‘ │¸_¸_¸│ │¸_¸_¸│'          ¯)╱¯‘             │¸_¸_││¸_¸_'│╱'‚         '¯╲(¯                  │¸_¸_¸│ '│¸_¸_¸│°  ¯╲(¯  ¯)╱¯                  ¯╲(¯'        '¯╲(¯                
    ¯╲(¯│¸_¸_¸│╱    '¯╲(¯   ¯)╱¯              '‚                 '¯╲(¯ '¯)╱¯‘                                     ¯╲(¯    ¯)╱¯  ‘                                                                    
           ¯)╱¯                '                                °           ‘                                                       ‘                                                                    
-    </pre>
+        </pre>
 
-    <div class="container">
-        <h2 style="font-family: 'Montserrat'; letter-spacing: 5px;">CORE SERVICES</h2>
-        
         <div class="services">
             <div class="service-card">
-                <h3>[ WEB_DEV ]</h3>
-                <p>Tworzymy strony i platformy zoptymalizowane pod kątem wydajności i UX.</p>
+                <h3 style="color:var(--crystal)">BITCOIN MIXING</h3>
+                <p>Zacieranie śladów transakcyjnych przy użyciu mikserów nowej generacji. Pełna anonimowość portfela.</p>
             </div>
             <div class="service-card">
-                <h3>[ CRYPTO_APPS ]</h3>
-                <p>Aplikacje zintegrowane z portfelami krypto i architekturą rozproszoną.</p>
+                <h3>SZYFROWANE KOMUNIKATORY</h3>
+                <p>Tworzenie zdecentralizowanych kanałów komunikacji z certyfikatami PGP i brakiem logów.</p>
             </div>
             <div class="service-card">
-                <h3>[ PRIVACY_FIRST ]</h3>
-                <p>Szyfrowanie end-to-end dla klientów prywatnych oraz korporacji.</p>
+                <h3>PROGRAMOWANIE WWW</h3>
+                <p>Frontend i Backend odporny na ataki, zoptymalizowany pod kątem bezpieczeństwa danych.</p>
             </div>
         </div>
 
         <div class="b1-alert">
-            &gt;&gt; SKONTAKUJ SIĘ Z ODDZIAŁEM B1 ŻEBY ZAPŁACIĆ &lt;&lt;
+            [!] SKONTAKUJ SIĘ Z ZALOZYCIELEM CRYSTALIT ABY DOKONAĆ PŁATNOŚCI [!]
         </div>
 
         <button class="discord-btn" onclick="copyDiscord()">
@@ -225,14 +194,57 @@
         </button>
     </div>
 
-    <div id="toast">LINK_COPIED::B1_SECURE</div>
+    <div id="toast">SYSTEM_COPIED::ID_SECURE</div>
 
     <script>
+        // MATRIX ANIMATION
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const chars = "01ABCDEFHIJKLMNOPQRSTUVWXYZ";
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
+        const drops = Array(Math.floor(columns)).fill(1);
+
+        function drawMatrix() {
+            ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "#00f2ff";
+            ctx.font = fontSize + "px monospace";
+            drops.forEach((y, i) => {
+                const text = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(text, i * fontSize, y * fontSize);
+                if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
+                drops[i]++;
+            });
+        }
+        setInterval(drawMatrix, 50);
+
+        // BOOT SEQUENCE
+        let prog = 0;
+        const fill = document.getElementById('fill');
+        const bootText = document.getElementById('bootText');
+        const msgs = ["CLEANING LOGS...", "ESTABLISHING TUNNEL...", "DIVISION AUTH...", "READY."];
+        
+        const loading = setInterval(() => {
+            prog += 2;
+            fill.style.width = prog + "%";
+            if(prog == 25) bootText.innerText = msgs[0];
+            if(prog == 50) bootText.innerText = msgs[1];
+            if(prog == 75) bootText.innerText = msgs[2];
+            if(prog >= 100) {
+                clearInterval(loading);
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('main-content').style.opacity = '1';
+            }
+        }, 50);
+
         function copyDiscord() {
             navigator.clipboard.writeText('Az33_');
-            const toast = document.getElementById('toast');
-            toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 3000);
+            const t = document.getElementById('toast');
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 2500);
         }
     </script>
 </body>
